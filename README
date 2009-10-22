@@ -1,0 +1,13 @@
+= LegisDados =
+
+O LegisDados é um é um projeto para agregar software de extração de
+dados do Legislativo Brasileiro. A iniciativa partiu dos projetos
+CongressoAberto e ParlamentoAberto que, como fica claro pelo nome, têm
+muito em comum. Para evitar repetição de esforços e desacoplar
+extração de dados de aplicações escritas usando esses dados, vamos
+agregar aqui scripts de raspagem (scraping) de tudo que pudermos
+relativo ao Legislativo. A idéia é aumentar a colaboração entre os
+dois projetos e incentivar o surgimento de novas aplicações.
+
+Para mais informações, veja o nosso wiki em:
+http://wiki.github.com/obvio171/legisdados
