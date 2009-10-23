@@ -9,7 +9,7 @@ require 'fastercsv'
 # about the legislators in the Brazilian Chamber of Deputies and
 # stores it in a CSV file. You can change the constants below to store
 # things in different places
-RAILS_ROOT = '../../../'
+RAILS_ROOT = '~/reps/legisdados/'
 
 # Base directory where data is going to be stored
 DATA_PATH = File.join(RAILS_ROOT, 'data', 'br_chamber')
@@ -33,6 +33,7 @@ NUM_ENTRIES = /Foram encontrados\s+(\d+)\s+/
 base_url = "http://www.camara.gov.br/internet/deputado/historic.asp?" +
            "Pagina=%d&dt_inicial=01%%2F01%%2F1959&dt_final=31%%2F12%%2F2010&" +
            "parlamentar=&histMandato=1&ordenarPor=2&Submit3=Pesquisar"
+
 
 # Make directories
 FileUtils.mkpath(SOURCE_DATA_PATH)
