@@ -29,9 +29,12 @@ get.votacoes <-
             ##if ano is missing use ano_votacao
             billyear <- ifelse(is.na(billyear), rcyear,billyear)
             bill <- with(data.votacoes,paste(billtype," ",billno,"/",billyear,sep=""))
-            billdescription <- sapply(ss,function(x) paste(x[6:length(x)], collapse=" "))
-            billdescription <- gsub("^ *- *", "", billdescription)
+            rcdescription <- sapply(ss,function(x) paste(x[6:length(x)], collapse=" "))
+            rcdescription <- gsub("^ *- *", "", rcdescription)
         })
+        data.votacoes$billproc <- NULL
+        data.votacoes$billtext <- NULL
+        data.votacoes$bill <- NULL        
         data.votacoes
     }
 

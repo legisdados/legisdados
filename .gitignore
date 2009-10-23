@@ -3,7 +3,7 @@
 .Rhistory
 
 # directories
-# data/*
+data/*
 #images/*
 
 # Use wildcards as well

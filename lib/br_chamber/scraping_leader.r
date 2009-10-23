@@ -16,4 +16,4 @@ opt <- getopt(matrix(c( 'rcvoteid' , 'r', 1, "character"
 res <- get.lider(opt$rcvoteid)
 
 ## output to csv file
-write.csv(res, file=paste("~/reps/legisdados/data/br_chamber/source_data/leaders/leader", opt$rcvoteid, ".csv", sep=''), row.names=FALSE)
+write.csv(res, file=paste("~/reps/legisdados/data/br_chamber/output_data/leaders/leader", opt$rcvoteid, ".csv", sep=''), row.names=FALSE)

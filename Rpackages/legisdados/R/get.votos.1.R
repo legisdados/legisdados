@@ -4,12 +4,12 @@ function(LVfile) {
     ## This function needs both the LV and the HE file in the same directory
     ## It does not work for LP files without modification
     ## options(encoding="ISO8859-1")
-    HEfile <- gsub("/LV","/HE",LVfile)
+    HEfile <- gsub("LV","HE",LVfile)
     ##Read data from VOTE LIST file for the vote
-    if(nchar(LVfile)==24)  { #formato antigo: titulo tinha 24 characters, no novo so 21
-        LV <- read.fix(LVfile, widths=c(9,-1,9,40,10,10,25,4),strip.white=TRUE)
+    if(nchar(basename(LVfile))==24)  { #formato antigo: titulo tinha 24 characters, no novo so 21
+        LV <- read.fix(LVfile, widths=c(9,-1,9,40,10,10,25,4), strip.white=TRUE, encoding="latin1")
     }  else {
-        LV <- read.fix(LVfile, widths=c(9,-1,6,40,10,10,25,4),strip.white=TRUE,encoding="latin1")
+        LV <- read.fix(LVfile, widths=c(9,-1,6,40,10,10,25,4), strip.white=TRUE, encoding="latin1")
     }
     voteid <- LV$V2[1]  #store number of vote for future use
     names(LV) <- c("session","rcvoteid","namelegis",paste("vote",voteid,sep="."),"party","state","matricula") #rename fields
@@ -20,7 +20,7 @@ function(LVfile) {
     vt <- unlist(read.table(HEfile, header=FALSE, strip.white = TRUE, as.is = TRUE, encoding="latin1", sep="\n"))
     vt.date <- as.Date(vt[3], "%d/%m/%Y")
     vt.time <- as.POSIXlt(paste(vt.date, vt[4]))
-    vt.descrip<-gsub("\"","",vt[13])    #get rid of quotes in the description of the bill
+    vt.descrip<-gsub("\"","",vt[13])    ##get rid of quotes in the description of the bill
     vt.session<- vt[1]
     HE <- data.frame(rcvoteid=voteid,rcdate=vt.date,rctime=vt.time,session=vt.session,billtext=vt.descrip)  
     data.votacoes <- get.votacoes(HE)
