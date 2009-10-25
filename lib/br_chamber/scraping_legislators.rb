@@ -14,12 +14,12 @@ class ScraperOptions
     opts = OptionParser.new do |opts|
       opts.banner = "Usage: #{script_name}"
 
-      opts.on(:REQUIRED, '-dDIR', '--directory=DIR',
-              'Output directory for data') do |dir|
+      opts.on(:REQUIRED, '-dDIR', '--directory=DIR', 'Output directory for ' +
+              'data (optional, defaults to current dir)') do |dir|
         options[:output_directory] = dir
       end
 
-      opts.on(:NONE, '--no-parse', "Only download pages to be scraped," +
+      opts.on(:NONE, '--no-parse', "Only download pages to be scraped, " +
               "but don't parse them") do |dir|
         options[:noparse] = true
       end
