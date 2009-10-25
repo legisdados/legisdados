@@ -9,21 +9,21 @@ library('getopt')
 ## 1 means the argument is required, 0 no arg, 2 optional
 ## give a zip file
 opt <- getopt(matrix(c( 'file' , 'f', 1, "character",
-                       'basedir', 'b', 1, 'character'
+                       'directory', 'd', 1, 'character'
                        ), ncol=4, byrow=TRUE))
 
 
-if (is.null(opt$basedir) ) {
-    opt$basedir <- "."
+if (is.null(opt$directory) ) {
+    opt$directory <- "."
 }
 
 regtest <- FALSE
 if (regtest) {
-    opt$file <- paste(opt$basedir,"data/br_chamber/source_data/www.camara.gov.br/internet/plenario/result/votacao/Maio08.zip")
+    opt$file <- paste(opt$directory,"data/br_chamber/source_data/www.camara.gov.br/internet/plenario/result/votacao/Maio09.zip", sep="/")
 }
 
-basedir <- opt$basedir
-source(paste(basedir, "Rpackages/legisdados/load.R", sep="/"), echo=FALSE)
+directory <- opt$directory
+source(paste(directory, "Rpackages/legisdados/load.R", sep="/"), echo=FALSE)
 
 ## tmp directory
 tmpdir <- tempdir()
@@ -42,7 +42,7 @@ LVfiles <- dir(tmpdir, pattern="LV", full.names=TRUE)
 res <- get.votos(LVfiles)
 
 fn <- basename(opt$file)
-f <- function(x) paste(basedir,"data/br_chamber/output_data/votes/",x,sep="/")
+f <- function(x) paste(directory,"data/br_chamber/output_data/votes/",x,sep="/")
 f1 <- f(gsub(".zip$", "_votos.csv", fn))
 f2 <- f(gsub(".zip$", "_votacoes.csv", fn))
 f3 <- f(gsub(".zip$", ".RData", fn))

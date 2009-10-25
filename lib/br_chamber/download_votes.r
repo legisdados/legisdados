@@ -10,17 +10,17 @@ library('getopt')
 ## 1 means the argument is required, 0 no arg, 2 optional
 ## give a date in YYYYMM numeric format
 opt <- getopt(matrix(c(
-                       'basedir', 'b', 1, 'character',
+                       'directory', 'd', 1, 'character',
                        'all', 'a', 0, 'character'
                        ), ncol=4, byrow=TRUE))
 
 
-if (is.null(opt$basedir) ) {
-    opt$basedir <- "."
+if (is.null(opt$directory) ) {
+    opt$directory <- "."
 }
 
-basedir <- opt$basedir
-source(paste(basedir, "Rpackages/legisdados/load.R", sep="/"), echo=FALSE)
+directory <- opt$directory
+source(paste(directory, "Rpackages/legisdados/load.R", sep="/"), echo=FALSE)
 
 
 ##Get current year
@@ -45,6 +45,6 @@ print(zip.files)
 
 for (i in zip.files) {
     the.url <- paste("http://www.camara.gov.br/internet/plenario/result/votacao/",i,".zip",sep="")
-    tmp <- system(paste("wget -x -N -P ",basedir,"data/br_chamber/source_data/ ", the.url, sep=''))
+    tmp <- system(paste("wget -x -N -P ",directory,"data/br_chamber/source_data/ ", the.url, sep=''))
 }
 

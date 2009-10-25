@@ -2,7 +2,7 @@ get.bill <- function(file) {
     billid <- gsub(".*=([0-9]*)","\\1", file)
     if (length(grep("Prop_Erro|Prop_Lista",file))>0)  return(NULL)
     tmp <- readLines(file)
-    if (!any(grepl("Módulo", tmp))) tmp <- readLines(file,encoding="latin1")  
+    if (!any(grepl("Módulo", tmp))) tmp <- readLines(file, encoding="latin1")  
     if(length(grep("Nenhuma proposição encontrada",tmp))>0) return(NULL)
     tmp <-  gsub("\r|&nbsp","",tmp)
     tmp <-  gsub(";+"," ",tmp)
