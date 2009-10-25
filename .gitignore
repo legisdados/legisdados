@@ -1,0 +1,12 @@
+# Can ignore specific files
+.DS_Store
+.Rhistory
+
+# directories
+data/*
+#images/*
+
+# Use wildcards as well
+*~
+\#*
+.\#*
