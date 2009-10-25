@@ -5,20 +5,14 @@ require 'iconv'
 require 'fastercsv'
 
 
-# Rails is absolutely not needed for this script. It scrapes info
-# about the legislators in the Brazilian Chamber of Deputies and
-# stores it in a CSV file. You can change the constants below to store
-# things in different places
-RAILS_ROOT = '../../../'
-
 # Base directory where data is going to be stored
-DATA_PATH = File.join(RAILS_ROOT, 'data', 'br_chamber')
+DATA_PATH = File.join(Dir.pwd, 'data', 'br_chamber')
 
 # Directory where we'll store the raw HTML pages we're scraping (for reference)
-SOURCE_DATA_PATH = File.join(DATA_PATH, 'source_data', 'legislators')
+SOURCE_DATA_PATH = File.join(DATA_PATH, 'source_data', 'legislators', 'list')
 
 # Path for each HTML page to be downloaded (page number to be interpolated)
-LEGISLATORS_LIST = File.join(SOURCE_DATA_PATH, "legislators_list%0.2d.html")
+LEGISLATORS_LIST = File.join(SOURCE_DATA_PATH, "page%0.2d.html")
 
 # Path where we store the final CSV file with the scraped info
 LEGISLATORS_CSV = File.join(DATA_PATH, 'legislators.csv')
