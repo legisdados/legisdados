@@ -109,9 +109,6 @@ class LegislatorScraper
   end
 
   def parse!
-    # Make directories
-    FileUtils.mkpath(@data_path)
-
     num_pages = Dir.chdir(@source_data_path) { Dir['*.html'] }.size
     pages_left = num_pages
     page_number = 0
