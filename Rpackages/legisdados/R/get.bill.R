@@ -1,79 +1,25 @@
-get.bill <- function(file) {  
-    billid <- gsub(".*=([0-9]*)","\\1", file)
-    if (length(grep("Prop_Erro|Prop_Lista",file))>0)  return(NULL)
-    tmp <- readLines(file)
-    if (!any(grepl("Módulo", tmp))) tmp <- readLines(file, encoding="latin1")  
-    if(length(grep("Nenhuma proposição encontrada",tmp))>0) return(NULL)
-    tmp <-  gsub("\r|&nbsp","",tmp)
-    tmp <-  gsub(";+"," ",tmp)
-    t0 <- tmp[grep("Proposição",tmp)[1]]
-    propno <- as.numeric(trimm(gsub(".*CodTeor=([0-9]+).*","\\1",t0)))
-    ##FIX: parse result when a deputado is the author
-    t0 <- tmp[grep("Autor",tmp)[1]]
-    author <- trimm(gsub(".*Autor: </b></td><td>(.*)</td>.*","\\1",t0))
-    ##FIX: what to do with "Poder Executivo" and other non-legislators?
-    if (length(grep("Detalhe.asp", t0))>0) {
-        authorid <- gsub(".*Detalhe.asp\\?id=([0-9]*).*", "\\1", t0)
+get.bill <- function(sigla="MPV",numero=447,ano=2008,overwrite=TRUE, directory="~/reps/legisdados/") {
+    ##FIX use RCurl?
+    if (overwrite) {
+        opts <- "-N"
     } else {
-        authorid <- NA
+        opts <- "-nc"
+    }  
+    ## FIX: code as NA if value is missing
+    ## -N for overwriting, -nc for not overwriting
+    ##tmp <- system(paste("wget -r -l1 -t 15  ",opts," 'http://www.camara.gov.br/sileg/Prop_Lista.asp?Sigla=",sigla,"&Numero=",numero,"&Ano=",ano,"' -P ~/reps/CongressoAberto/data/www.camara.gov.br/sileg  2>&1",sep=''),intern=TRUE)
+    cmd <- paste("wget -t 15 -x --accept Prop_Deta* --force-html --base=url  ",opts," 'http://www.camara.gov.br/sileg/Prop_Lista.asp?Sigla=",sigla,"&Numero=",numero,"&Ano=",ano,"' -P ", directory, "/data/br_chamber/source_data/  2>&1",sep='')
+    print(cmd)  
+    tmp <- system(cmd,intern=TRUE)
+    tmp <- iconv(tmp,from="latin1")
+    urlloc <- grep(".*www.camara.gov.br/sileg/.*id=.*",tmp)[1]
+    ##url <- Prop_Detalhe.asp?id=
+    ##id <- gsub(".*id=(.*)", "\\1", url)
+    url <- tmp[urlloc]
+    id <- gsub(".*id=([0-9]*).*", "\\1", url)
+    if (length(grep("id=", url))==0) {
+        id <- NA
     }
-    t0 <- tmp[grep("Data de Apresentação",tmp)]
-    date <- trimm(gsub(".*</b>(.*)","\\1",t0))
-    date <- as.character(as.Date(date,"%d/%m/%Y"))
-    ##FIX: find what this is
-    t0 <- tmp[grep("Apreciação:",tmp)][1]
-    aprec <- trimm(gsub(".*</b>(.*)","\\1",t0))
-    ##FIX: need english name
-    t0 <- tmp[grep("Regime de tramitação:",tmp)+1][1]
-    ## note use of the not operator!
-    tramit <- trimm(gsub("([^<]*)<br>?.*","\\1",t0, perl=TRUE))
-    tramit[tramit=="."] <- NA
-    ##FIX: Categorize response
-    t0 <- tmp[grep("Situação:",tmp)][1]
-    status <- trimm(gsub(".*</b>(.*)<br>","\\1",t0))
-    ##FIX: name
-    t0 <- tmp[grep("Ementa:",tmp)][1]
-    ementa <- trimm(gsub(".*</b>(.*)","\\1",t0))
-    ##FIX: name
-    t0 <- tmp[grep("Explicação da Ementa:",tmp)][1]
-    ementashort <- trimm(gsub(".*</b>(.*)","\\1",t0))
-    ##FIX: name
-    t0 <- tmp[grep("Indexação:",tmp)][1]
-    indexa <- trimm(gsub(".*Indexação: </b>(.*)","\\1",t0))
-    ##FIX: name
-    iua <- grep("Última Ação:",tmp)[1]+7
-    if (!is.na(iua)) {
-        t0 <- tmp[iua]
-        uadate <- as.Date(trimm(gsub("<b>([^<]*).*","\\1",  tmp[iua])), format="%d/%m/%Y")
-        iua.e <- grep("</table>",tmp[-c(1:iua)])[1]+iua
-        t0 <- paste(tmp[(iua+1):iua.e],  collapse=" ")
-        t0 <- trimm(gsub("<[^<]*>|\t",  "",  t0))
-        uadesc <- trimm(gsub("<b>([^<]*).*","\\1",  tmp[iua+7]))
-    } else {
-        uadate <- NA
-        uadesc <- NA
-    }
-    ## FIX: what else? despacho? 
-    f <- function(x) ifelse (length(x)==0,NA,remove.tags(x))
-    res <- try(data.frame(## billtype=f(sigla), ##FIX GET FROM FILE
-                          ## billno=f(numero),
-                          ## billyear=f(ano),
-                          billid=billid,
-                          propno=f(propno),
-                          billauthor=f(author),
-                          billauthorid=f(authorid),
-                          billdate=f(date),
-                          aprec=f(aprec),
-                          tramit=f(tramit),
-                          status=f(status),
-                          ementa=f(ementa),
-                          ementashort=f(ementashort),
-                          indexa=f(indexa),
-                          lastactiondate=f(uadate),
-                          lastaction=f(uadesc),
-                          stringsAsFactors=FALSE))
-    if (("try-error"%in%class(res))) {   
-        res <- NULL
-    } 
-  res
+    ##c(url, id)
+    id
 }
