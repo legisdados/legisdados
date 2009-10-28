@@ -37,6 +37,16 @@ if (is.null(opt$directory) ) {
     opt$directory <- "."
 }
 
+
+if (!exists("DEBUG") ) {
+    DEBUG <- FALSE
+}
+
+if (DEBUG) {
+    opt$directory <- "~/reps/legisdados"
+    opt$`load` <- TRUE
+}
+
 directory <- opt$directory
 source(paste(directory, "Rpackages/legisdados/load.R", sep="/"), echo=FALSE)
 
@@ -91,6 +101,9 @@ for (i in zip.files) {
         load(j)
         dbWriteTableU(connect, "br_votes", res[["votos"]], append=TRUE)
         dbWriteTableU(connect, "br_rollcalls", res[["votacoes"]], append=TRUE)
+        if (!is.null(res[["lideres"]])) {
+            dbWriteTableU(connect, "br_votes_leaders", res[["lideres"]], append=TRUE)
+        }
     }
 }
 
