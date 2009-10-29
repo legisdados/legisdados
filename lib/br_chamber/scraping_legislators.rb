@@ -29,7 +29,7 @@ class ScraperOptions
         options[:data_dir] = dir
       end
 
-      opts.on(:REQUIRED, '-sDIR', '--source_data=DIR', 'Output directory ' +
+      opts.on(:REQUIRED, '-sDIR', '--source-data=DIR', 'Output directory ' +
               'for raw data (optional, defaults to ./source_data)') do |dir|
         options[:source_data_dir] = dir
       end
