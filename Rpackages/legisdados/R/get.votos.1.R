@@ -20,12 +20,12 @@ function(LVfile) {
     vt <- unlist(read.table(HEfile, header=FALSE, strip.white = TRUE, as.is = TRUE, encoding="latin1", sep="\n"))
     vt.date <- as.Date(vt[3], "%d/%m/%Y")
     vt.time <- as.POSIXlt(paste(vt.date, vt[4]))
-    vt.descrip<-gsub("\"","",vt[13])    ##get rid of quotes in the description of the bill
+    vt.descrip<-gsub("\"","",vt[length(vt)])    ##get rid of quotes in the description of the bill
     vt.session<- vt[1]
     HE <- data.frame(rcvoteid=voteid,rcdate=vt.date,rctime=vt.time,session=vt.session,billtext=vt.descrip)  
     data.votacoes <- get.votacoes(HE)
     data.votacoes$legis <- get.legis(data.votacoes$legisyear)
-    rcfile <- gsub(".*/(LV.*)\\.txt","\\1",LVfile)
+    rcfile <- basename(LVfile)
     data.votacoes$rcfile <- rcfile
     data.votos <- LV
     data.votos$rcvoteid <- voteid
