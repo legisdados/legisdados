@@ -29,7 +29,8 @@ class LegislatorScraper
     @base_url = "http://www.camara.gov.br/internet/deputado/historic.asp?" +
       "Pagina=%d&dt_inicial=01%%2F01%%2F1959&dt_final=31%%2F12%%2F2010&" +
       "parlamentar=&histMandato=1&ordenarPor=2&Submit3=Pesquisar"
-    @base_source_path = File.join(@source_data_path, url_path(@base_url))
+    @page_file_selector = File.join(@source_data_path, url_path(@base_url),
+                                   'historic.asp*')
   end
 
   def run!
@@ -52,7 +53,7 @@ class LegislatorScraper
       end
 
       if page_number == 1
-        page = File.read(Dir[File.join(@base_source_path, '*')].first)
+        page = File.read(Dir[@page_file_selector].first)
         page =~ @num_entries
 
         num_entries = $1.to_i
@@ -79,7 +80,7 @@ class LegislatorScraper
     FasterCSV.open(legislator_index, 'w', :headers => true) do |csv|
       csv << field_names
 
-      Dir[File.join(@base_source_path, '*')].each do |filepath|
+      Dir[@page_file_selector].each do |filepath|
         page_number += 1
         puts "Parsing page #{page_number}..."
 
