@@ -1,6 +1,17 @@
+# -*- coding: utf-8 -*-
 require 'optparse'
+require 'unicode'
 
 module ScrapingHelper
+  include Unicode
+
+  # takes utf8 strings
+  def strip_diacritics(utf8_string)
+    # separate the character and the diacritic, e.g. "á" -> "a'"
+    formD = normalize_D(utf8_string)
+    # remove the separated diacritics (by keeping only ASCII letters and space)
+    formD.tr('^a-zA-Z ', '')
+  end
 
   # Expects a full URL, beginning with 'http://'
   def url_path(url)
