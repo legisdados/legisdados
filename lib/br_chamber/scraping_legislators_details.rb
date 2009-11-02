@@ -31,16 +31,6 @@ class LegislatorDetailsScraper
     # Detail pages come in iso-8859-1, we need utf-8
     @isolatin_to_utf8 = Iconv.new('UTF-8', 'iso-8859-1')
 
-    # Regexes
-    @regexes = {
-      :full_name => /^<td>Nome Civil: (.*)$/,
-      :full_name_line_feed => /^<td>Nome Civil: (.*)<[bB][rR]>$/,
-      :subscription_number => Regexp.new('^<A HREF="RelVotacoes.asp[?]' +
-                                         'nuLegislatura=\d+&' +
-                                         'nuMatricula=(\d+).*' + "$"),
-      :end_of_line => /^(.*)<[bB][rR]>$/
-    }
-
     @bio_base_url = "http://www2.camara.gov.br/internet/deputados/" +
       "biodeputado/index.html?nome=%s&leg=53"
     @bio_file_selector = File.join(@source_data_path,
@@ -140,11 +130,17 @@ class LegislatorDetailsScraper
         paragraph.each do |line|
           if line =~ regexp
             legislator[key] = $1.strip
-            puts key.to_s + ' => ' + legislator[key]
             break
           end
         end
       end
+
+      legislator[:subscription_number] = doc.html =~ /nuMatricula=(\d+)/ ? $1 :
+        nil
+      legislator[:email_address] = doc.html =~ /mailto:(.+?\.br)/ ? $1 : nil
+
+      legislator[:mailing_address] = (doc/'.depAreaConteudo').last.inner_text.
+        map {|line| line.strip }.reject {|line| line.empty? }.join("\n")
 
       if legislator[:legislatures]
         legislator[:legislatures] = legislator[:legislatures].split(' ').
