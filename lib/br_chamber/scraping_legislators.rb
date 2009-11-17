@@ -49,8 +49,20 @@ class LegislatorScraper
       url = @base_url % page_number
       puts "Downloading page #{page_number}..."
 
-      Dir.chdir(@source_data_path) do
-        `wget -x "#{url}"`
+      while true
+        Dir.chdir(@source_data_path) do
+          `wget -x "#{url}"`
+        end
+
+        filename = File.join(@source_data_path, url_path(url))
+
+        if File.exists?(filename)
+          break
+        else
+          puts "Error: File #{filename} doesn't exist."
+          puts "Downloading page #{page_number} failed, retrying..."
+          sleep 5
+        end
       end
 
       if page_number == 1
