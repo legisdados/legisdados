@@ -39,6 +39,7 @@ class LegislatorScraper
   end
 
   def get!
+    FileUtils.mkpath(@source_data_path)
     num_pages = 0
     pages_left = 1
     page_number = 0
