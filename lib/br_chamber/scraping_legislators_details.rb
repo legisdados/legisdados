@@ -18,7 +18,6 @@ class LegislatorDetailsScraper
     @options = opts
 
     # Base directory where parsed data is going to be stored
-    # TODO remove hardcoded legislature year range
     @data_path = File.expand_path(@options[:data_dir])
 
     # Directory to store the raw HTML pages we're scraping
