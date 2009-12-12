@@ -84,11 +84,11 @@ class LegislatorDetailsScraper
   end
 
   def parse!
-    legislators = {}
-
     output_path = File.join(@data_path, 'br', 'chamber', '2007-2010',
                             'legislators')
     FileUtils.mkpath(output_path)
+
+    legislators = []
 
     # Scrape profile details for each legislator
     Dir[@detail_file_selector].each do |filepath|
@@ -98,6 +98,14 @@ class LegislatorDetailsScraper
       puts "Parsing id #{legislator[:chamber_id]}"
 
       doc = Hpricot(@isolatin_to_utf8.iconv(File.read(filepath)))
+
+      # Parsing political name.
+      # - sample html:
+      # <div id="depInfo"> <!-- *********************************************************** -->
+
+      # <span style="font-size:1.3em"><strong>PERPÉTUA ALMEIDA                   </strong></span>
+      legislator[:political_name] = doc.search('div#depInfo').search('span').
+        first.inner_text.strip
 
       # Parsing info from the first paragraph.
       # - Sample url: http://www.camara.gov.br/internet/deputado/Dep_Detalhe.asp?id=520068
@@ -161,6 +169,11 @@ class LegislatorDetailsScraper
 
       puts "Parsed details for #{legislator[:full_name]} " +
            "(chamber_id=#{legislator[:chamber_id]})..."
+      legislators << legislator
+    end
+
+    File.open(File.join(output_path, 'all.json'), 'w') do |f|
+      f << JSON.generate(legislators)
     end
   end
 end

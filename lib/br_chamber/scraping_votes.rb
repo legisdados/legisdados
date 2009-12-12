@@ -80,7 +80,7 @@ class RollCallScraper
     votes_csv = File.join(output_path, 'votes.csv')
 
     Dir.chdir(input_path) do
-      Dir[File.join(input_path, '*.zip')].each do |zip_file|
+      `ls -t --reverse *.zip`.each do |zip_file|
         puts `unzip #{zip_file}`
       end
     end
@@ -109,9 +109,9 @@ class RollCallScraper
                   ]
 
 
-    filepaths = `find #{input_path} | grep -e "/HE"`.split("\n").reject do |f|
+    filepaths = `find #{input_path} | grep -e "/HECD"`.split("\n").reject {|f|
       f[-10..-5] == '000000' # we don't want sessions where nothing was voted
-    end
+    }.sort
 
     FasterCSV.open(roll_calls_csv, 'w', :headers => true) do |csv|
       csv << field_names
@@ -172,9 +172,7 @@ class RollCallScraper
                      ['legislator_subscription_number', 3]
                     ]
 
-
-    filepaths = `find #{input_path} | grep -e "/LV"`.split("\n")
-
+    filepaths = `find #{input_path} | grep -e "/LVCD"`.split("\n").sort
 
     FasterCSV.open(votes_csv, 'w', :headers => true) do |csv|
       csv << field_lengths.map{|name, length| name }
